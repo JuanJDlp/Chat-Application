@@ -12,6 +12,7 @@ import lombok.Setter;
 public class Message {
     private String content;
     private String sender;
+    private String[] receivers;
 
     public Message(String content) {
         this.content = content;
