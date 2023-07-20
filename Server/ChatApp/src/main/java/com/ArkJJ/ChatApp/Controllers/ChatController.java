@@ -1,7 +1,9 @@
 package com.ArkJJ.ChatApp.Controllers;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import com.ArkJJ.ChatApp.POJOs.Message;
@@ -9,11 +11,18 @@ import com.ArkJJ.ChatApp.POJOs.Message;
 @Controller
 public class ChatController {
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public Message messageHandler(Message message) {
-        System.out.println(message.getSender() + " : " + message.getContent());
-        return new Message(message.getContent());
+    @MessageMapping("/chat.sendMessage")
+    @SendTo("/topic/public")
+    public Message sendMessage(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+        return chatMessage;
+    }
+
+    @MessageMapping("/chat.addUser")
+    @SendTo("/topic/public")
+    public Message addUser(@Payload Message chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+        headerAccessor.getSessionAttributes().put("sender", chatMessage.getSender());
+        System.out.println("A user joined " + chatMessage.getSender());
+        return chatMessage;
     }
 
 }

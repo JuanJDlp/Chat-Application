@@ -7,11 +7,19 @@ import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 
+import com.arkjj.ChatWindowController;
 import com.arkjj.POJOs.MessagePojo;
+
+import javafx.application.Platform;
 
 public class MyStompSessionHandler implements StompSessionHandler {
 
     private MessagePojo messagePOJO;
+    private ChatWindowController windowController;
+
+    public MyStompSessionHandler(ChatWindowController windowController) {
+        this.windowController = windowController;
+    }
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
@@ -20,16 +28,20 @@ public class MyStompSessionHandler implements StompSessionHandler {
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
-        System.out.println("Got a new message: " + payload);
-        messagePOJO = (MessagePojo) payload;
-        System.out.println(messagePOJO.getContent());
+        Platform.runLater(() -> {
+            messagePOJO = (MessagePojo) payload;
+            System.out.println("Got a new message: " + messagePOJO.getContent());
+            if (messagePOJO != null) {
+                windowController.receiveMessage(messagePOJO.getContent());
+            }
+        });
+
     }
 
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Connected succesfully");
-        session.subscribe("/topic/greetings", this);
-        session.send("/app/hello", new MessagePojo("Hello from the client"));
+        session.subscribe("/topic/public", this);
     }
 
     @Override
@@ -44,8 +56,8 @@ public class MyStompSessionHandler implements StompSessionHandler {
 
     @Override
     public void handleTransportError(StompSession session, Throwable exception) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'handleTransportError'");
+        System.out.println("The server is closed. ");
+        System.exit(-1);
     }
 
 }
