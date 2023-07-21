@@ -10,7 +10,7 @@ import com.ArkJJ.ChatApp.POJOs.Message;
 public class ChatController {
 
     @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @SendTo("/topic/greetings") // TODO: Receive this information (receivers) from the client
     public Message messageHandler(Message message) {
         System.out.println(message.getSender() + " : " + message.getContent());
         return new Message(message.getContent());
