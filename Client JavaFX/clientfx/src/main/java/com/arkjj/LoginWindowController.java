@@ -37,6 +37,7 @@ public class LoginWindowController {
                 Parent root = loader.load();
                 ChatWindowController controller = loader.getController();
                 controller.setUsername(username);
+                controller.startConnection();
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 Scene scene;
                 scene = new Scene(root);

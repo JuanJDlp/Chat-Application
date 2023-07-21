@@ -32,8 +32,17 @@ public class MyStompSessionHandler implements StompSessionHandler {
         Platform.runLater(() -> {
             messagePOJO = (MessagePojo) payload;
             System.out
-                    .println("Got a new message: " + messagePOJO.getContent() + "\n from: " + messagePOJO.getSender());
-            if (messagePOJO.getContent() != null && !messagePOJO.getSender().equals(GlobalSession.getSessionId())) {
+                    .println(
+                            "Got a new message: " + messagePOJO.getContent() + "\n from: " + messagePOJO.getSenderID());
+
+            if (messagePOJO.getType().equals(MessagePojo.Type.JOIN)) {
+                // TODO: IMPLEMENT THE UPDATING THE ADDED USERS
+                windowController.displayUserConnected(messagePOJO);
+                return;
+            }
+
+            if (messagePOJO.getContent() != null && !messagePOJO.getSenderID().equals(GlobalSession.getSessionId())
+                    && messagePOJO.getType().equals(MessagePojo.Type.CHAT)) {
                 windowController.receiveMessage(messagePOJO.getContent());
             }
         });
@@ -45,8 +54,9 @@ public class MyStompSessionHandler implements StompSessionHandler {
         System.out.println("Connected succesfully");
         System.out.println("You session ID is: " + session.getSessionId());
         this.GlobalSession = session;
-        session.send("/app/chat.addUser", new MessagePojo(null, session.getSessionId()));
+
         session.subscribe("/topic/public", this);
+        session.subscribe("/user/" + session.getSessionId() + "/private", this);
     }
 
     @Override

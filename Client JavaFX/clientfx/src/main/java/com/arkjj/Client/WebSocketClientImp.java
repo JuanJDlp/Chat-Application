@@ -14,7 +14,7 @@ public class WebSocketClientImp {
     static StompSession stompSession;
     private static MessagePojo messagePojo = new MessagePojo();
 
-    public WebSocketClientImp(ChatWindowController windowController) {
+    public WebSocketClientImp(ChatWindowController windowController, String username) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stompClient = new WebSocketStompClient(client);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -22,6 +22,8 @@ public class WebSocketClientImp {
             stompSession = stompClient
                     .connectAsync("ws://localhost:8080/chat", new MyStompSessionHandler(windowController))
                     .get();
+            stompSession.send("/app/chat.addUser", new MessagePojo(null, stompSession.getSessionId(), username));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -30,7 +32,8 @@ public class WebSocketClientImp {
     public void sendMessage(String message) {
 
         messagePojo.setContent(message);
-        messagePojo.setSender(stompSession.getSessionId());
+
+        messagePojo.setSenderID(stompSession.getSessionId());
         stompSession.send("/app/chat.sendMessage", messagePojo);
 
     }

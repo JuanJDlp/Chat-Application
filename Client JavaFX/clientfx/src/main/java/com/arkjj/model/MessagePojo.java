@@ -2,7 +2,41 @@ package com.arkjj.model;
 
 public class MessagePojo {
     private String content;
-    private String sender;
+    private String senderID;
+    private String receiverID;
+    private String senderUsername;
+    private Type type;
+
+    public enum Type {
+        JOIN,
+        LEAVE,
+        CHAT
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getSenderUsername() {
+        return senderUsername;
+    }
+
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
+    }
+
+    public void setReceiverID(String receiverID) {
+        this.receiverID = receiverID;
+    }
+
+    public String getReceiverID() {
+        return receiverID;
+
+    }
 
     public MessagePojo() {
     }
@@ -11,24 +45,25 @@ public class MessagePojo {
         this.content = content;
     }
 
-    public MessagePojo(String content, String sender) {
+    public MessagePojo(String content, String SenderID, String senderUsername) {
         this.content = content;
-        this.sender = sender;
+        this.senderID = SenderID;
+        this.senderUsername = senderUsername;
     }
 
     public String getContent() {
         return content;
     }
 
-    public String getSender() {
-        return sender;
+    public String getSenderID() {
+        return senderID;
     }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setSenderID(String SenderID) {
+        this.senderID = SenderID;
     }
 }

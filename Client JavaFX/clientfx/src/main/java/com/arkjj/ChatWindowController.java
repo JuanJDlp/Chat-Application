@@ -4,14 +4,19 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.arkjj.Client.WebSocketClientImp;
+import com.arkjj.model.MessagePojo;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -29,6 +34,12 @@ public class ChatWindowController implements Initializable {
 
     @FXML
     private VBox vboxMessages;
+
+    @FXML
+    private Label titleLabel;
+
+    @FXML
+    private ListView<String> listViewContacts;
 
     private WebSocketClientImp client;
 
@@ -49,13 +60,32 @@ public class ChatWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        client = new WebSocketClientImp(this);
-        System.out.println(username);
+        listViewContacts.getItems().add(titleLabel.getText());
+
+        listViewContacts.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            titleLabel.setText(newValue);
+        });
+
         vboxMessages.heightProperty().addListener((observable, oldValue, newValue) -> {
             spMain.setVvalue((Double) newValue);
 
         });
 
+        textArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().toString().equals("ENTER")) {
+                    send();
+                }
+            }
+
+        });
+
+    }
+
+    public void startConnection() {
+        client = new WebSocketClientImp(this, username);
     }
 
     public void receiveMessage(String message) {
@@ -72,6 +102,26 @@ public class ChatWindowController implements Initializable {
 
         hbox.getChildren().add(textFlow);
         vboxMessages.getChildren().add(hbox);
+    }
+
+    public void displayUserConnected(MessagePojo messagePojo) {
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPadding(new Insets(5, 5, 5, 10));
+        Text text = new Text(messagePojo.getContent());
+        text.setFill(javafx.scene.paint.Color.WHITE);
+        TextFlow textFlow = new TextFlow(text);
+        textFlow.setStyle(
+                "-fx-background-color: rgb(15,125,245); " +
+                        "-fx-color: rgb(255,255,255); " +
+                        "-fx-background-radius: 20px; " +
+                        "-fx-padding: 5px");
+
+        hbox.getChildren().add(textFlow);
+        vboxMessages.getChildren().add(hbox);
+        if (!messagePojo.getSenderUsername().equals(username)) {
+            listViewContacts.getItems().add(messagePojo.getSenderUsername());
+        }
     }
 
     public void send() {

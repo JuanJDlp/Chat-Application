@@ -11,7 +11,24 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Message {
     private String content;
-    private String sender;
+    private String senderID;
+    private String receiverID;
+    private String senderUsername;
+    private Type type;
+
+    public enum Type {
+        JOIN,
+        LEAVE,
+        CHAT
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
 
     public Message(String content) {
         this.content = content;
