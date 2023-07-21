@@ -10,9 +10,10 @@ module com.arkjj {
     requires transitive spring.boot.autoconfigure;
     requires transitive spring.boot;
     requires spring.context;
+    requires spring.core;
 
     opens com.arkjj to javafx.fxml;
 
     exports com.arkjj;
-    exports com.arkjj.POJOs;
+    exports com.arkjj.model;
 }

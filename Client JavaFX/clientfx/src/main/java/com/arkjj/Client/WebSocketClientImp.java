@@ -7,7 +7,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import com.arkjj.ChatWindowController;
-import com.arkjj.POJOs.MessagePojo;
+import com.arkjj.model.MessagePojo;
 
 public class WebSocketClientImp {
 
@@ -20,9 +20,8 @@ public class WebSocketClientImp {
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         try {
             stompSession = stompClient
-                    .connectAsync("ws://localhost:8080//chat", new MyStompSessionHandler(windowController))
+                    .connectAsync("ws://localhost:8080/chat", new MyStompSessionHandler(windowController))
                     .get();
-            stompSession.send("/app/chat.addUser", new MessagePojo(null, stompSession.getSessionId()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -32,7 +31,6 @@ public class WebSocketClientImp {
 
         messagePojo.setContent(message);
         messagePojo.setSender(stompSession.getSessionId());
-        System.out.println("STOMP ID: " + stompSession.getSessionId());
         stompSession.send("/app/chat.sendMessage", messagePojo);
 
     }

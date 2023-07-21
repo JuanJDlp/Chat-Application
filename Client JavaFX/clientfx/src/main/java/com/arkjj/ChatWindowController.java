@@ -32,13 +32,25 @@ public class ChatWindowController implements Initializable {
 
     private WebSocketClientImp client;
 
+    private String username;
+
     public ChatWindowController() {
+    }
+
+    public String getUsername() {
+        return username;
+
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         client = new WebSocketClientImp(this);
-
+        System.out.println(username);
         vboxMessages.heightProperty().addListener((observable, oldValue, newValue) -> {
             spMain.setVvalue((Double) newValue);
 

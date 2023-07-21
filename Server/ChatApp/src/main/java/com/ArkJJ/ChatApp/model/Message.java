@@ -1,4 +1,4 @@
-package com.ArkJJ.ChatApp.POJOs;
+package com.ArkJJ.ChatApp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

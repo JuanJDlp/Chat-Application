@@ -1,4 +1,4 @@
-package com.arkjj.POJOs;
+package com.arkjj.model;
 
 public class MessagePojo {
     private String content;

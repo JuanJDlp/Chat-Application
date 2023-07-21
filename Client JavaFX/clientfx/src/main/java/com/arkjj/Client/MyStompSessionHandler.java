@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 
 import com.arkjj.ChatWindowController;
-import com.arkjj.POJOs.MessagePojo;
+import com.arkjj.model.MessagePojo;
 
 import javafx.application.Platform;
 
@@ -16,6 +16,7 @@ public class MyStompSessionHandler implements StompSessionHandler {
 
     private MessagePojo messagePOJO;
     private ChatWindowController windowController;
+    private StompSession GlobalSession;
 
     public MyStompSessionHandler(ChatWindowController windowController) {
         this.windowController = windowController;
@@ -30,8 +31,9 @@ public class MyStompSessionHandler implements StompSessionHandler {
     public void handleFrame(StompHeaders headers, Object payload) {
         Platform.runLater(() -> {
             messagePOJO = (MessagePojo) payload;
-            System.out.println("Got a new message: " + messagePOJO.getContent());
-            if (messagePOJO != null) {
+            System.out
+                    .println("Got a new message: " + messagePOJO.getContent() + "\n from: " + messagePOJO.getSender());
+            if (messagePOJO.getContent() != null && !messagePOJO.getSender().equals(GlobalSession.getSessionId())) {
                 windowController.receiveMessage(messagePOJO.getContent());
             }
         });
@@ -41,6 +43,9 @@ public class MyStompSessionHandler implements StompSessionHandler {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Connected succesfully");
+        System.out.println("You session ID is: " + session.getSessionId());
+        this.GlobalSession = session;
+        session.send("/app/chat.addUser", new MessagePojo(null, session.getSessionId()));
         session.subscribe("/topic/public", this);
     }
 
