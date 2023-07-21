@@ -11,7 +11,6 @@ import com.arkjj.POJOs.MessagePojo;
 public class WebSocketClientImp {
 
     static StompSession stompSession;
-    private static MessagePojo messagePojo = new MessagePojo();
 
     public WebSocketClientImp() {
         WebSocketClient client = new StandardWebSocketClient();
@@ -26,9 +25,14 @@ public class WebSocketClientImp {
 
     public void sendMessage(String message) {
 
-        messagePojo.setContent(message);
-        messagePojo.setSender("Juan");
-        stompSession.send("/app/hello", messagePojo);
+        var messagePojo = new MessagePojo() {
+            {
+                setContent(message);
+                setSender("Juan"); // TODO: Register sender from GUI
+                setReceivers(["*"]); // TODO: Set receivers from GUI, "*" doesn't exclude sender
+            }
+        };
 
+        stompSession.send("/app/hello", messagePojo);
     }
 }
