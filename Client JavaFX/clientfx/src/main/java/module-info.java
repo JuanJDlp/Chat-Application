@@ -11,6 +11,8 @@ module com.arkjj {
     requires transitive spring.boot;
     requires spring.context;
     requires spring.core;
+    requires com.google.gson;
+    requires java.net.http;
 
     opens com.arkjj to javafx.fxml;
 

@@ -6,4 +6,5 @@ com\arkjj\LoginWindowController.class
 com\arkjj\Client\MyStompSessionHandler.class
 com\arkjj\model\MessagePojo.class
 com\arkjj\App.class
+com\arkjj\model\User.class
 com\arkjj\Client\WebSocketClientImp.class

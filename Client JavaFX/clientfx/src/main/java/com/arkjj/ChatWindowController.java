@@ -1,10 +1,12 @@
 package com.arkjj;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.arkjj.Client.WebSocketClientImp;
 import com.arkjj.model.MessagePojo;
+import com.arkjj.model.User;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -60,9 +62,10 @@ public class ChatWindowController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        listViewContacts.getItems().add(titleLabel.getText());
-
+        listViewContacts.getItems().add(titleLabel.getText()); // This line adds chat room to the possible contacts to
+                                                               // text
         listViewContacts.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            // TODO: OPEN A COMUNICATION WITH THAT CHANNEL
             titleLabel.setText(newValue);
         });
 
@@ -82,6 +85,19 @@ public class ChatWindowController implements Initializable {
 
         });
 
+    }
+
+    public void updateConnectedUsers(List<User> newUsers) {
+        // TODO: FIX THIS SO WHEN A USER CONNECTS IT DOES NOT RESET THE CHAT
+        String nameOfTheMainRoom = "Chat room";
+        listViewContacts.getItems().clear();
+        listViewContacts.getItems().add(nameOfTheMainRoom);
+        titleLabel.setText(nameOfTheMainRoom);
+        for (User user : newUsers) {
+            if (!user.getUsername().equals(username)) {
+                listViewContacts.getItems().add(user.getUsername());
+            }
+        }
     }
 
     public void startConnection() {
@@ -108,7 +124,7 @@ public class ChatWindowController implements Initializable {
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
         hbox.setPadding(new Insets(5, 5, 5, 10));
-        Text text = new Text(messagePojo.getContent());
+        Text text = new Text((String) messagePojo.getContent());
         text.setFill(javafx.scene.paint.Color.WHITE);
         TextFlow textFlow = new TextFlow(text);
         textFlow.setStyle(
@@ -119,9 +135,7 @@ public class ChatWindowController implements Initializable {
 
         hbox.getChildren().add(textFlow);
         vboxMessages.getChildren().add(hbox);
-        if (!messagePojo.getSenderUsername().equals(username)) {
-            listViewContacts.getItems().add(messagePojo.getSenderUsername());
-        }
+
     }
 
     public void send() {
@@ -144,6 +158,7 @@ public class ChatWindowController implements Initializable {
 
         hbox.getChildren().add(textFlow);
         vboxMessages.getChildren().add(hbox);
+
         client.sendMessage(message);
 
     }

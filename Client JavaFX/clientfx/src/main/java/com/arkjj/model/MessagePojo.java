@@ -1,7 +1,7 @@
 package com.arkjj.model;
 
 public class MessagePojo {
-    private String content;
+    private Object content;
     private String senderID;
     private String receiverID;
     private String senderUsername;
@@ -41,17 +41,17 @@ public class MessagePojo {
     public MessagePojo() {
     }
 
-    public MessagePojo(String content) {
+    public MessagePojo(Object content) {
         this.content = content;
     }
 
-    public MessagePojo(String content, String SenderID, String senderUsername) {
+    public MessagePojo(Object content, String SenderID, String senderUsername) {
         this.content = content;
         this.senderID = SenderID;
         this.senderUsername = senderUsername;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
@@ -59,7 +59,7 @@ public class MessagePojo {
         return senderID;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 

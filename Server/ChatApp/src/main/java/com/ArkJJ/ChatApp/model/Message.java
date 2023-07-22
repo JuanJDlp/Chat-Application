@@ -1,6 +1,7 @@
 package com.ArkJJ.ChatApp.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,8 +10,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Message {
-    private String content;
+    private Object content;
     private String senderID;
     private String receiverID;
     private String senderUsername;
@@ -30,7 +32,7 @@ public class Message {
         this.type = type;
     }
 
-    public Message(String content) {
+    public Message(Object content) {
         this.content = content;
     }
 }
