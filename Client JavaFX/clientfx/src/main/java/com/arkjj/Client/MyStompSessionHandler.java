@@ -43,6 +43,14 @@ public class MyStompSessionHandler implements StompSessionHandler {
             System.out
                     .println(
                             "Got a new message: " + messagePOJO.getContent() + "\n from: " + messagePOJO.getSenderID());
+
+            if (messagePOJO.getType().equals(MessagePojo.Type.LEAVE)) {
+                windowController.displayUserDisconnected(messagePOJO);
+                windowController.updateConnectedUsers(getConnectedUsers());
+
+                return;
+            }
+
             if (messagePOJO.getType().equals(MessagePojo.Type.JOIN) && !messagePOJO.getSenderUsername().equals("")) {
                 windowController.displayUserConnected(messagePOJO);
                 windowController.updateConnectedUsers(getConnectedUsers());

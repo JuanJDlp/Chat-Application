@@ -138,8 +138,27 @@ public class ChatWindowController implements Initializable {
 
     }
 
+    public void displayUserDisconnected(MessagePojo messagePojo) {
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPadding(new Insets(5, 5, 5, 10));
+
+        Text text = new Text((String) messagePojo.getContent());
+
+        text.setFill(javafx.scene.paint.Color.BLACK);
+        TextFlow textFlow = new TextFlow(text);
+        textFlow.setStyle(
+                "-fx-background-color: rgb(240, 34, 44); " +
+                        "-fx-color: rgb(255,255,255); " +
+                        "-fx-background-radius: 20px; " +
+                        "-fx-padding: 5px");
+
+        hbox.getChildren().add(textFlow);
+        vboxMessages.getChildren().add(hbox);
+    }
+
     public void send() {
-        String message = textArea.getText();
+        String message = username + "\n" + textArea.getText();
         if (message.isEmpty()) {
             return;
         }
