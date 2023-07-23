@@ -1,12 +1,6 @@
 package com.arkjj.Client;
 
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -15,8 +9,6 @@ import org.springframework.messaging.simp.stomp.StompSessionHandler;
 
 import com.arkjj.ChatWindowController;
 import com.arkjj.model.MessagePojo;
-import com.arkjj.model.User;
-import com.google.gson.Gson;
 
 import javafx.application.Platform;
 
@@ -25,7 +17,6 @@ public class MyStompSessionHandler implements StompSessionHandler {
     private MessagePojo messagePOJO;
     private ChatWindowController windowController;
     private StompSession GlobalSession;
-    private static Gson gson = new Gson();
 
     public MyStompSessionHandler(ChatWindowController windowController) {
         this.windowController = windowController;
@@ -46,20 +37,20 @@ public class MyStompSessionHandler implements StompSessionHandler {
 
             if (messagePOJO.getType().equals(MessagePojo.Type.LEAVE)) {
                 windowController.displayUserDisconnected(messagePOJO);
-                windowController.updateConnectedUsers(getConnectedUsers());
+                windowController.updateConnectedUsers();
 
                 return;
             }
 
             if (messagePOJO.getType().equals(MessagePojo.Type.JOIN) && !messagePOJO.getSenderUsername().equals("")) {
                 windowController.displayUserConnected(messagePOJO);
-                windowController.updateConnectedUsers(getConnectedUsers());
+                windowController.updateConnectedUsers();
                 return;
             }
 
             if (messagePOJO.getContent() != null && !messagePOJO.getSenderID().equals(GlobalSession.getSessionId())
                     && messagePOJO.getType().equals(MessagePojo.Type.CHAT)) {
-                windowController.receiveMessage((String) messagePOJO.getContent());
+                windowController.receiveMessage(messagePOJO);
             }
         });
 
@@ -73,29 +64,6 @@ public class MyStompSessionHandler implements StompSessionHandler {
 
         session.subscribe("/topic/public", this);
         session.subscribe("/user/" + session.getSessionId() + "/private", this);
-    }
-
-    private List<User> getConnectedUsers() {
-        String apiURL = "http://localhost:8080/sessions/findAll";
-        List<User> userList = null;
-        try {
-            HttpRequest getRequest = HttpRequest.newBuilder()
-                    .uri(new URI(apiURL))
-                    .build();
-
-            HttpClient httpClient = HttpClient.newHttpClient();
-
-            HttpResponse<String> response = httpClient.send(getRequest,
-                    HttpResponse.BodyHandlers.ofString());
-
-            User[] userArray = gson.fromJson(response.body(), User[].class);
-            // Convert the array to a List if needed
-            userList = Arrays.asList(userArray);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return userList;
     }
 
     @Override

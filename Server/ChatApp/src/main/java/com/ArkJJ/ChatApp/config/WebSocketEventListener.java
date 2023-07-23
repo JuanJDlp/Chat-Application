@@ -12,7 +12,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import com.ArkJJ.ChatApp.model.Message;
 import com.ArkJJ.ChatApp.model.User;
-import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +26,6 @@ public class WebSocketEventListener {
     @Autowired
     private final SimpMessageSendingOperations messagingTemplate;
 
-    private final Gson gson = new Gson();
 
     public WebSocketEventListener(SimpMessageSendingOperations messagingTemplate) {
         this.messagingTemplate = messagingTemplate;

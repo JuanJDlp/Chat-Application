@@ -59,11 +59,9 @@ public class ChatController {
     }
 
     @MessageMapping("/private-message")
-    private void privateMessage(@Payload Message message) {
-        System.out
-                .println("A private message was sent from " + message.getSenderID() + " to " + message.getReceiverID());
-
+    public Message recMessage(@Payload Message message) {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverID(), "/private", message);
-
+        System.out.println(message.toString());
+        return message;
     }
 }

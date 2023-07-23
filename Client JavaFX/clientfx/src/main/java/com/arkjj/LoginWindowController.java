@@ -42,7 +42,7 @@ public class LoginWindowController {
                 Scene scene;
                 scene = new Scene(root);
                 stage.setScene(scene);
-                stage.setTitle("Chat");
+                stage.setTitle("Chat - " + username);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
