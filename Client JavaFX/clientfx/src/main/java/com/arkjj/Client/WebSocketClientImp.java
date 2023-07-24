@@ -43,11 +43,12 @@ public class WebSocketClientImp {
 
     }
 
-    public void sendPrivateMessage(String message, String receiver) {
+    public void sendPrivateMessage(String message, String receiver, String username) {
         messagePojo.setContent(message);
         messagePojo.setType(MessagePojo.Type.CHAT);
         messagePojo.setSenderID(stompSession.getSessionId());
         messagePojo.setReceiverID(receiver);
+        messagePojo.setSenderUsername(username);
         stompSession.send("/app/private-message", messagePojo);
     }
 }

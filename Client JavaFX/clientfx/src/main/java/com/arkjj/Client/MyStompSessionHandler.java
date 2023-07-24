@@ -63,7 +63,8 @@ public class MyStompSessionHandler implements StompSessionHandler {
         this.GlobalSession = session;
 
         session.subscribe("/topic/public", this);
-        session.subscribe("/user/" + session.getSessionId() + "/private", this);
+        session.subscribe("/user/" + session.getSessionId() + "/private",
+                new PrivateMessagingHandler(windowController));
     }
 
     @Override

@@ -1,9 +1,10 @@
 com\arkjj\ChatWindowController.class
 com\arkjj\model\MessagePojo$Type.class
 com\arkjj\ChatWindowController$1.class
-module-info.class
 com\arkjj\LoginWindowController.class
 com\arkjj\Client\MyStompSessionHandler.class
+com\arkjj\Client\PrivateMessagingHandler.class
+module-info.class
 com\arkjj\model\MessagePojo.class
 com\arkjj\App.class
 com\arkjj\model\User.class

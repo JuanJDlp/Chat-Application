@@ -1,7 +1,6 @@
 package com.arkjj.Client;
 
 import org.springframework.messaging.simp.stomp.StompHeaders;
-import org.springframework.messaging.simp.stomp.StompSession;
 
 import com.arkjj.ChatWindowController;
 import com.arkjj.model.MessagePojo;
@@ -12,10 +11,10 @@ public class PrivateMessagingHandler extends MyStompSessionHandler {
 
     private MessagePojo messagePOJO;
     private ChatWindowController windowController;
-    private StompSession GlobalSession;
 
     public PrivateMessagingHandler(ChatWindowController windowController) {
         super(windowController);
+        this.windowController = windowController;
     }
 
     @Override
@@ -26,9 +25,8 @@ public class PrivateMessagingHandler extends MyStompSessionHandler {
                     .println(
                             "Got a new message: " + messagePOJO.getContent() + "\n from: " + messagePOJO.getSenderID());
 
-            if (messagePOJO.getContent() != null && !messagePOJO.getSenderID().equals(GlobalSession.getSessionId())
-                    && messagePOJO.getType().equals(MessagePojo.Type.CHAT)) {
-                windowController.receiveMessage(messagePOJO);
+            if (messagePOJO.getContent() != null && messagePOJO.getType().equals(MessagePojo.Type.CHAT)) {
+                windowController.receivePrivateMessage(messagePOJO);
             }
         });
 
