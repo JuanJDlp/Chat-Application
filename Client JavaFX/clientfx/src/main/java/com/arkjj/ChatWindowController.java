@@ -1,21 +1,16 @@
 package com.arkjj;
 
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.arkjj.Client.WebSocketClientImp;
+import com.arkjj.Services.UserService;
+import com.arkjj.model.HBoxBuilder;
 import com.arkjj.model.MessagePojo;
 import com.arkjj.model.User;
-import com.google.gson.Gson;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -25,31 +20,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.paint.Color;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class ChatWindowController implements Initializable {
 
     @FXML
     private Button sendBTN;
-
     @FXML
     private TextField textArea;
     @FXML
     private ScrollPane spMain;
-
     @FXML
     private VBox vboxMessages;
-
     @FXML
     private Label titleLabel;
-
     @FXML
     private ListView<String> listViewContacts;
 
@@ -57,156 +45,107 @@ public class ChatWindowController implements Initializable {
 
     private static final VBox chatRoomMessages = new VBox();;
 
+    private UserService userService = new UserService();
+
     private WebSocketClientImp client;
-
-    private String username;
-
-    private static Gson gson = new Gson();
-
-    // TODO: REFACTOR THIS
-    private String channel = "/app/chat.sendMessage";
-    private String receiver = null;
 
     public ChatWindowController() {
     }
 
-    public String getUsername() {
-        return username;
-
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void startConnection(String username) {
+        this.client = new WebSocketClientImp(this, username);
+        updateConnectedUsers(); // Get all the users that are currently connected to the server
 
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        listViewContacts.getItems().add(titleLabel.getText()); // This line adds chat room to the possible contacts to
-                                                               // text
-        listViewContacts.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            titleLabel.setText(newValue);
-            List<User> newUsers = getConnectedUsers();
-            channel = "/app/chat.sendMessage";
-            receiver = null;
-            for (User user : newUsers) {
-                if (user.getUsername().equals(newValue)) {
-                    receiver = user.getId();
-                    channel = "/app/private-message";
-                    break;
-                }
-            }
-            Optional<User> user = newUsers.stream().filter(userFiltered -> userFiltered.getUsername().equals(newValue))
-                    .findFirst();
-            if (user.isPresent()) {
-                User userFiltered = user.get();
-                vboxMessages.getChildren().clear();
-                vboxMessages.getChildren().addAll(messagesMap.get(userFiltered.getId()));
-            } else {
-                vboxMessages.getChildren().clear();
-
-                vboxMessages.getChildren().addAll(chatRoomMessages);
-            }
-        });
-
+        // Keeps trak of the scrollPane so when the Vboc gets too big the SP will be
+        // updated
         vboxMessages.heightProperty().addListener((observable, oldValue, newValue) -> {
             spMain.setVvalue((Double) newValue);
 
         });
 
-        textArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        listViewContacts.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            titleLabel.setText(newValue); // Updates de title depending where and who you are texting to
+            String userID = userService.getUserIDByName(newValue);
+            updateChatBoxDependingOnUser(userID);
+            client.setReceiverID(userID);
 
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().toString().equals("ENTER")) {
-                    send();
-                }
+        });
+
+        textArea.setOnKeyPressed(event -> {
+            if (event.getCode().toString().equals("ENTER")) {
+                send();
             }
-
         });
 
     }
 
-    private List<User> getConnectedUsers() {
-        String apiURL = "http://localhost:8080/sessions/findAll";
-        List<User> userList = null;
-        try {
-            HttpRequest getRequest = HttpRequest.newBuilder()
-                    .uri(new URI(apiURL))
-                    .build();
+    private void updateChatBoxDependingOnUser(String userID) {
 
-            HttpClient httpClient = HttpClient.newHttpClient();
-
-            HttpResponse<String> response = httpClient.send(getRequest,
-                    HttpResponse.BodyHandlers.ofString());
-
-            User[] userArray = gson.fromJson(response.body(), User[].class);
-            // Convert the array to a List if needed
-            userList = Arrays.asList(userArray);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (userID != null) {
+            vboxMessages.getChildren().clear();
+            vboxMessages.getChildren().addAll(messagesMap.get(userID));
+        } else {
+            // If a user was not found it means you are in the chat room so just put those
+            // messages
+            vboxMessages.getChildren().clear();
+            vboxMessages.getChildren().addAll(chatRoomMessages);
         }
-
-        return userList;
     }
 
     public void updateConnectedUsers() {
         // TODO: FIX THIS SO WHEN A USER CONNECTS IT DOES NOT RESET THE CHAT
-        List<User> newUsers = getConnectedUsers();
-        String nameOfTheMainRoom = "Chat room";
+        String nameOfTheMainRoom = "Chat Room";
+        List<User> newUsers = userService.getConnectedUsers();
         listViewContacts.getItems().clear();
         listViewContacts.getItems().add(nameOfTheMainRoom);
-        titleLabel.setText(nameOfTheMainRoom);
 
         for (User user : newUsers) {
-            if (!user.getUsername().equals(username)) {
+            if (!user.getUsername().equals(client.getUsername())) {
+
                 listViewContacts.getItems().add(user.getUsername());
-                if (!messagesMap.containsKey(user.id)) {
-                    messagesMap.put(user.id, new VBox());
+
+                if (!messagesMap.containsKey(user.getId())) {
+                    messagesMap.put(user.getId(), new VBox());
                 }
             }
         }
     }
 
-    public void startConnection() {
-        client = new WebSocketClientImp(this, username);
-    }
-
     public void receiveMessage(MessagePojo messagePojo) {
-        HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setPadding(new Insets(5, 10, 5, 5));
-        Text text = new Text((String) messagePojo.getContent());
-        TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle(
-                "-fx-background-color: rgb(238,238,228); " +
-                        "-fx-color: rgb(255,255,255); " +
-                        "-fx-background-radius: 20px; " +
-                        "-fx-padding: 5px");
-        hbox.getChildren().add(textFlow);
+
+        HBox hbox = new HBoxBuilder()
+                .alignment(Pos.CENTER_LEFT)
+                .padding(new Insets(5, 10, 5, 5))
+                .addText((String) messagePojo.getContent(),
+                        "-fx-background-color: rgb(238,238,228); " +
+                                "-fx-color: rgb(255,255,255); " +
+                                "-fx-background-radius: 20px; " +
+                                "-fx-padding: 5px")
+                .build();
+
         chatRoomMessages.getChildren().add(hbox);
 
         if (titleLabel.getText().equals("Chat room")) {
-            System.out.println("Eestas en la chat room");
             vboxMessages.getChildren().setAll(chatRoomMessages);
         }
     }
 
     public void receivePrivateMessage(MessagePojo messagePojo) {
-        HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setPadding(new Insets(5, 10, 5, 5));
-        Text text = new Text((String) messagePojo.getContent());
-        TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle(
-                "-fx-background-color: rgb(238,238,228); " +
-                        "-fx-color: rgb(255,255,255); " +
-                        "-fx-background-radius: 20px; " +
-                        "-fx-padding: 5px");
-        hbox.getChildren().add(textFlow);
+        HBox hbox = new HBoxBuilder()
+                .alignment(Pos.CENTER_LEFT)
+                .padding(new Insets(5, 10, 5, 5))
+                .addText((String) messagePojo.getContent(),
+                        "-fx-background-color: rgb(238,238,228); " +
+                                "-fx-color: rgb(255,255,255); " +
+                                "-fx-background-radius: 20px; " +
+                                "-fx-padding: 5px")
+                .build();
 
-        System.out.println("No estas en la chat room");
         VBox vbox = messagesMap.get(messagePojo.getSenderID());
         vbox.getChildren().add(hbox);
         if (messagePojo.getSenderUsername().equals(titleLabel.getText())) {
@@ -216,72 +155,65 @@ public class ChatWindowController implements Initializable {
     }
 
     public void displayUserConnected(MessagePojo messagePojo) {
-        HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setPadding(new Insets(5, 5, 5, 10));
-        Text text = new Text((String) messagePojo.getContent());
-        text.setFill(javafx.scene.paint.Color.WHITE);
-        TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle(
-                "-fx-background-color: rgb(15,125,245); " +
-                        "-fx-color: rgb(255,255,255); " +
-                        "-fx-background-radius: 20px; " +
-                        "-fx-padding: 5px");
-        hbox.getChildren().add(textFlow);
+        HBox hbox = new HBoxBuilder()
+                .alignment(Pos.CENTER)
+                .padding(new Insets(5, 5, 5, 10))
+                .addText((String) messagePojo.getContent(),
+                        "-fx-background-color: rgb(15,125,245); " +
+                                "-fx-color: rgb(255,255,255); " +
+                                "-fx-background-radius: 20px; " +
+                                "-fx-padding: 5px")
+                .build();
+
         chatRoomMessages.getChildren().add(hbox);
         vboxMessages.getChildren().setAll(chatRoomMessages);
     }
 
     public void displayUserDisconnected(MessagePojo messagePojo) {
-        HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setPadding(new Insets(5, 5, 5, 10));
+        HBox hbox = new HBoxBuilder()
+                .alignment(Pos.CENTER)
+                .padding(new Insets(5, 5, 5, 10))
+                .addText((String) messagePojo.getContent(),
+                        "-fx-background-color: rgb(240, 34, 44); " +
+                                "-fx-color: rgb(255,255,255); " +
+                                "-fx-background-radius: 20px; " +
+                                "-fx-padding: 5px",
+                        Color.BLACK)
+                .build();
 
-        Text text = new Text((String) messagePojo.getContent());
-
-        text.setFill(javafx.scene.paint.Color.BLACK);
-        TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle(
-                "-fx-background-color: rgb(240, 34, 44); " +
-                        "-fx-color: rgb(255,255,255); " +
-                        "-fx-background-radius: 20px; " +
-                        "-fx-padding: 5px");
-        hbox.getChildren().add(textFlow);
         chatRoomMessages.getChildren().add(hbox);
         vboxMessages.getChildren().setAll(chatRoomMessages);
     }
 
     public void send() {
-        String message = username + "\n" + textArea.getText();
+        String message = client.getUsername() + "\n" + textArea.getText();
         if (message.isEmpty()) {
             return;
         }
         textArea.clear();
-        HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER_RIGHT);
-        hbox.setPadding(new Insets(5, 5, 5, 10));
-        Text text = new Text(message);
-        text.setFill(javafx.scene.paint.Color.WHITE);
-        TextFlow textFlow = new TextFlow(text);
-        textFlow.setStyle(
-                "-fx-background-color: rgb(15,125,245); " +
-                        "-fx-color: rgb(255,255,255); " +
-                        "-fx-background-radius: 20px; " +
-                        "-fx-padding: 5px");
-        hbox.getChildren().add(textFlow);
 
-        if (channel.equals("/app/chat.sendMessage")) {
-            client.sendMessage(message);
+        HBox hbox = new HBoxBuilder()
+                .alignment(Pos.CENTER_RIGHT)
+                .padding(new Insets(5, 10, 5, 5))
+                .addText(message,
+                        "-fx-background-color: rgb(15,125,245); " +
+                                "-fx-color: rgb(255,255,255); " +
+                                "-fx-background-radius: 20px; " +
+                                "-fx-padding: 5px",
+                        Color.WHITE)
+                .build();
+
+        if (titleLabel.getText().equals("Chat Room")) {
+            client.sendMessage("/app/chat.sendMessage", message);
             chatRoomMessages.getChildren().add(hbox);
             vboxMessages.getChildren().setAll(chatRoomMessages);
         } else {
-            System.out.println("No estas en la chat room");
-            VBox vbox = messagesMap.get(receiver);
+            VBox vbox = messagesMap.get(client.getReceiverID());
             vbox.getChildren().add(hbox);
             vboxMessages.getChildren().clear();
             vboxMessages.getChildren().addAll(vbox);
 
-            client.sendPrivateMessage(message, receiver, username);
+            client.sendPrivateMessage("/app/private-message", message);
         }
 
     }

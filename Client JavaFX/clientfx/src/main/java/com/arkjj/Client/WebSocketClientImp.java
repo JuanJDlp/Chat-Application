@@ -16,10 +16,13 @@ public class WebSocketClientImp {
     static StompSession stompSession;
     private static MessagePojo messagePojo = new MessagePojo();
     private static final Gson gson = new Gson();
+    private String username;
+    private String receiverID;
 
     public WebSocketClientImp(ChatWindowController windowController, String username) {
         WebSocketClient client = new StandardWebSocketClient();
         WebSocketStompClient stompClient = new WebSocketStompClient(client);
+        this.username = username;
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         try {
             stompSession = stompClient
@@ -34,21 +37,39 @@ public class WebSocketClientImp {
         }
     }
 
-    public void sendMessage(String message) {
+    public String getUsername() {
+        return username;
+    }
 
-        messagePojo.setContent(message);
-        messagePojo.setType(MessagePojo.Type.CHAT);
-        messagePojo.setSenderID(stompSession.getSessionId());
-        stompSession.send("/app/chat.sendMessage", messagePojo);
+    public void setUsername(String username) {
+        this.username = username;
 
     }
 
-    public void sendPrivateMessage(String message, String receiver, String username) {
+    public String getReceiverID() {
+        return receiverID;
+    }
+
+    public void setReceiverID(String receiverID) {
+        this.receiverID = receiverID;
+
+    }
+
+    public void sendMessage(String destination, String message) {
+
         messagePojo.setContent(message);
         messagePojo.setType(MessagePojo.Type.CHAT);
         messagePojo.setSenderID(stompSession.getSessionId());
-        messagePojo.setReceiverID(receiver);
+        stompSession.send(destination, messagePojo);
+
+    }
+
+    public void sendPrivateMessage(String destination, String message) {
+        messagePojo.setContent(message);
+        messagePojo.setType(MessagePojo.Type.CHAT);
+        messagePojo.setSenderID(stompSession.getSessionId());
+        messagePojo.setReceiverID(receiverID);
         messagePojo.setSenderUsername(username);
-        stompSession.send("/app/private-message", messagePojo);
+        stompSession.send(destination, messagePojo);
     }
 }

@@ -1,18 +1,22 @@
+// I dont understand this module thing in the javaFX but when you have a
+// dependency it has to go in here
+// so when you compile and run evrything loads correctkly
 module com.arkjj {
     requires javafx.controls;
     requires javafx.fxml;
     requires transitive javafx.graphics;
-    requires transitive spring.websocket;
-    requires transitive spring.boot.starter.websocket;
-    requires transitive spring.messaging;
-    requires transitive spring.web;
-    requires transitive spring.boot.starter;
-    requires transitive spring.boot.autoconfigure;
-    requires transitive spring.boot;
+    requires spring.websocket;
+    requires spring.boot.starter.websocket;
+    requires spring.messaging;
+    requires spring.web;
+    requires spring.boot.starter;
+    requires spring.boot.autoconfigure;
+    requires spring.boot;
     requires spring.context;
     requires spring.core;
     requires com.google.gson;
     requires java.net.http;
+    requires lombok;
 
     opens com.arkjj to javafx.fxml;
 
