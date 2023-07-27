@@ -186,7 +186,7 @@ public class ChatWindowController implements Initializable {
     }
 
     public void send() {
-        String message = client.getUsername() + "\n" + textArea.getText();
+        String message = textArea.getText();
         if (message.isEmpty()) {
             return;
         }
@@ -202,6 +202,8 @@ public class ChatWindowController implements Initializable {
                                 "-fx-padding: 5px",
                         Color.WHITE)
                 .build();
+
+        message = client.getUsername() + "\n " + message;
 
         if (titleLabel.getText().equals("Chat Room")) {
             client.sendMessage("/app/chat.sendMessage", message);

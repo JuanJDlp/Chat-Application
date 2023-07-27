@@ -9,20 +9,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arkjj.ChatWindowController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #81DAEE;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arkjj.ChatWindowController">
    <children>
-      <TextField fx:id="textArea" layoutX="163.0" layoutY="319.0" prefHeight="25.0" prefWidth="332.0" />
-      <Label fx:id="titleLabel" prefHeight="46.0" prefWidth="600.0" style="-fx-alignment: center;" text="Chat Room">
+      <Label fx:id="titleLabel" layoutX="307.0" layoutY="14.0" prefHeight="53.0" prefWidth="649.0" style="-fx-alignment: center;" text="Chat Room" textFill="#3a626b" textOverrun="CLIP">
          <font>
-            <Font size="31.0" />
+            <Font size="36.0" />
          </font>
       </Label>
-      <Button fx:id="sendBTN" layoutX="505.0" layoutY="319.0" mnemonicParsing="false" onAction="#send" text="Send" />
-      <ScrollPane fx:id="spMain" layoutX="163.0" layoutY="57.0" prefHeight="238.0" prefWidth="385.0">
+      <Button fx:id="sendBTN" layoutX="928.0" layoutY="540.0" mnemonicParsing="false" onAction="#send" prefHeight="34.0" prefWidth="36.0" style="-fx-background-radius: 50%; -fx-background-color: #3A626B;" text="&gt;" textFill="WHITE">
+         <font>
+            <Font name="System Bold Italic" size="17.0" />
+         </font></Button>
+      <ListView fx:id="listViewContacts" layoutX="5.0" layoutY="10.0" prefHeight="582.0" prefWidth="277.0" style="-fx-background-color: #C5E4EB; -fx-background-radius: 15px;" />
+      <ScrollPane fx:id="spMain" layoutX="307.0" layoutY="74.0" prefHeight="450.0" prefWidth="649.0" style="-fx-background-color: #54595c;">
          <content>
-            <VBox fx:id="vboxMessages" prefHeight="227.0" prefWidth="377.0" />
+            <VBox fx:id="vboxMessages" prefHeight="446.0" prefWidth="642.0" style="-fx-background-color: #C5E4EB;" />
          </content>
       </ScrollPane>
-      <ListView fx:id="listViewContacts" layoutY="57.0" prefHeight="287.0" prefWidth="147.0" />
+      <TextField fx:id="textArea" layoutX="320.0" layoutY="542.0" prefHeight="34.0" prefWidth="595.0" promptText="Type a message" style="-fx-background-color: #3A626B; -fx-background-radius: 20px;">
+         <font>
+            <Font name="System Italic" size="15.0" />
+         </font>
+      </TextField>
    </children>
 </AnchorPane>

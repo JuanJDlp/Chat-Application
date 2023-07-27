@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -26,6 +27,7 @@ public class HBoxBuilder {
 
     public HBoxBuilder addText(String textContent, String style) {
         Text text = new Text(textContent);
+        text.setFont(Font.font(15));
         TextFlow textFlow = new TextFlow(text);
         textFlow.setStyle(style);
         hbox.getChildren().add(textFlow);
@@ -35,6 +37,8 @@ public class HBoxBuilder {
     public HBoxBuilder addText(String textContent, String style, Paint value) {
         Text text = new Text(textContent);
         text.setFill(value);
+        text.setFont(Font.font(15));
+
         TextFlow textFlow = new TextFlow(text);
         textFlow.setStyle(style);
         hbox.getChildren().add(textFlow);

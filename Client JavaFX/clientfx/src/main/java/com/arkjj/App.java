@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class App extends Application {
         scene = new Scene(loadFXML("LoginWindow"));
         stage.setTitle("Login");
         stage.setScene(scene);
+        Image image = new Image(
+                "C:\\Users\\juanj\\Desktop\\Universidad Icesi\\Programing\\Java\\Chat application\\Client JavaFX\\clientfx\\src\\main\\resources\\com\\arkjj\\img\\pngaaa.com-5160457.png");
+        stage.getIcons().add(image);
         stage.show();
     }
 

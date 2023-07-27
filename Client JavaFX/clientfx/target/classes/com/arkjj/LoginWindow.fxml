@@ -3,23 +3,30 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arkjj.LoginWindowController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #c7e6ed; -fx-opacity: 85%;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.arkjj.LoginWindowController">
    <children>
-      <Label layoutY="51.0" prefHeight="17.0" prefWidth="600.0" style="-fx-alignment: center;" text="Welcome!">
+      <Label layoutX="484.0" layoutY="125.0" prefHeight="36.0" prefWidth="501.0" style="-fx-alignment: center;" text="Welcome!">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Label layoutX="1.0" layoutY="115.0" prefHeight="21.0" prefWidth="600.0" style="-fx-alignment: center;" text="Please insert a username to log into the chat!">
+      <Label layoutX="485.0" layoutY="189.0" prefHeight="21.0" prefWidth="501.0" style="-fx-alignment: center;" text="Please insert a username to log into the chat!">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="usernameInput" layoutX="151.0" layoutY="187.0" prefHeight="26.0" prefWidth="310.0" promptText="username" />
-      <Button fx:id="joinBTN" layoutX="275.0" layoutY="294.0" mnemonicParsing="false" onAction="#connectToChat" text="Join!" />
-      <Label fx:id="warningLabel" layoutX="151.0" layoutY="233.0" text="The username can not be blank" textFill="#ff0606" visible="false" />
+      <TextField fx:id="usernameInput" layoutX="581.0" layoutY="279.0" prefHeight="26.0" prefWidth="310.0" promptText="username" />
+      <Button fx:id="joinBTN" layoutX="700.0" layoutY="360.0" mnemonicParsing="false" onAction="#connectToChat" prefHeight="42.0" prefWidth="62.0" style="-fx-background-color: #405cf5; -fx-border-radius: 6px;" text="Join!" textFill="WHITE" />
+      <Label fx:id="warningLabel" layoutX="536.0" layoutY="307.0" text="The username can not be blank" textFill="#ff0606" visible="false" />
+      <ImageView fitHeight="453.0" fitWidth="474.0" layoutX="59.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@img/pngaaa.com-5160457.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

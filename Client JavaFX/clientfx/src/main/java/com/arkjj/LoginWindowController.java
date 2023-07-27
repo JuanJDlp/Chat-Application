@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -56,8 +57,12 @@ public class LoginWindowController implements Initializable {
         controller.startConnection(username);
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Scene scene;
-        scene = new Scene(root);
+        Image image = new Image(
+                "C:\\Users\\juanj\\Desktop\\Universidad Icesi\\Programing\\Java\\Chat application\\Client JavaFX\\clientfx\\src\\main\\resources\\com\\arkjj\\img\\pngaaa.com-5160457.png");
+        stage.getIcons().add(image);
+        Scene scene = new Scene(root);
+        String cssFile = getClass().getResource("app.css").toExternalForm();
+        scene.getStylesheets().add(cssFile);
         stage.setScene(scene);
         stage.setTitle("Chat - " + username);
         stage.show();

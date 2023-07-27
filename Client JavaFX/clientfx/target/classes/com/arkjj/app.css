@@ -1,0 +1,26 @@
+.list-cell {
+    -fx-font-size: 14px;
+    -fx-text-fill: #3A626B;
+    -fx-background-color: #C5E4EB;
+    -fx-padding: 10px;
+    -fx-border-color: #3A626B;
+    -fx-border-radius: 10px;
+    -fx-margin-top: 2px;
+    -fx-alignment: center;
+}
+
+.text-area {
+    -fx-text-fill: white;
+}
+
+.text-input {
+    -fx-text-fill: white;
+}
+
+VBox {
+    -fx-padding: 5px 15px;
+}
+
+HBox {
+    -fx-padding: 0px 5px
+}
