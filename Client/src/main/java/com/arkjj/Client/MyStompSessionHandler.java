@@ -7,21 +7,21 @@ import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 
-import com.arkjj.POJOs.MessagePojo;
+import com.arkjj.POJOs.Message;
 
 public class MyStompSessionHandler implements StompSessionHandler {
 
-    private MessagePojo messagePOJO;
+    private Message messagePOJO;
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
-        return MessagePojo.class;
+        return Message.class;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         System.out.println("Got a new message: " + payload);
-        messagePOJO = (MessagePojo) payload;
+        messagePOJO = (Message) payload;
         System.out.println(messagePOJO.getContent());
     }
 
@@ -29,7 +29,7 @@ public class MyStompSessionHandler implements StompSessionHandler {
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Connected succesfully");
         session.subscribe("/topic/greetings", this);
-        session.send("/app/hello", new MessagePojo("Hello from the client"));
+        session.send("/app/hello", new Message("Hello from the client"));
     }
 
     @Override

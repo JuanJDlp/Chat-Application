@@ -1,18 +1,18 @@
 package com.arkjj.POJOs;
 
-public class MessagePojo {
+public class Message {
     private String content;
     private String sender;
     private String[] receivers;
 
-    public MessagePojo() {
+    public Message() {
     }
 
-    public MessagePojo(String content) {
+    public Message(String content) {
         this.content = content;
     }
 
-    public MessagePojo(String content, String sender, String[] receivers) {
+    public Message(String content, String sender, String[] receivers) {
         this.content = content;
         this.sender = sender;
         this.receivers = receivers;
