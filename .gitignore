@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### VS Code ###
+.vscode/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -28,6 +31,3 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
-### VS Code ###
-.vscode/
